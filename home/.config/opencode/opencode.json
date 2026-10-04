@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp Router",
+      "options": {
+        "baseURL": "http://host.docker.internal:34847/v1"
+      },
+      "models": {
+        "qwen3": {
+          "name": "Qwen3.5-9B Defiant Edition"
+        },
+        "orinth": {
+            "name": "Orinth-AI Qwen3.5-9B"
+        }
+      }
+    }
+  },
+  "model": "llamacpp/qwen3"
+}

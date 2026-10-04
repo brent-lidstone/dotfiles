@@ -7,8 +7,34 @@ After=tailscaled.service network-online.target
 What=//truenas-scale/brents-data
 Where=/mnt/truenas-tailnet/brents-data
 Type=cifs
-Options=credentials=/etc/smb-creds,vers=3.0,uid=1000,gid=1000,_netdev
+
+# CIFS options configured to fail fast on network drops
+
+# _netdev: systemd automatically infers network dependencies from Type=cifs,
+# so _netdev is not actually required, but keeping it in the options list is
+# a best practice for external tooling like mount -a or custom parsing scripts.
+
+# soft: Tells the kernel to return an I/O error to the file system after
+# retries fail instead of freezing the process indefinitely (hard mount default).
+
+# echo_interval=2: Sets the SMB keepalive ping interval to 2 seconds (the default
+# is 60 seconds).
+
+Options=credentials=/etc/smb-creds,\
+        vers=3.0,\
+        uid=1000,\
+        gid=1000,\
+        _netdev,\
+        soft,\
+        echo_interval=2
 TimeoutSec=30
+
+
+# The [Install] section of a unit file is only read when you run the
+# sudo systemctl enable command. When systemd sees WantedBy=remote-fs.target
+# during the enable process, it creates a symlink in
+# /etc/systemd/system/remote-fs.target.wants/
+# that hooks the mount into the system's startup sequence.
 
 [Install]
 WantedBy=remote-fs.target
